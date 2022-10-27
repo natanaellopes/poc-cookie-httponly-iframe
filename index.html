@@ -12,26 +12,27 @@
     <h1>Checkout Service Security</h1>
     <button type="button" id="btn-check-cookies">Verificar cookies (api)</button>
 
-    <script>
+    <iframe id="iframe-wallet" src="https://2707-2804-14c-6570-471d-20b1-b348-7a96-8b9.sa.ngrok.io"></iframe>
 
-      const WALLET_API = 'http:/localhost:3333'
+    <script>
       const btnCheckCookies = document.getElementById('btn-check-cookies');
       btnCheckCookies.addEventListener('click', async () => {
-        try {
-          const response = await fetch(`${WALLET_API}/cookies`, {
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-      
-          const data = await response.json();
-      
-          return data;
-        } catch(e) {
-          console.error(e)
-        }
+        const iframeWallet = document.getElementById('iframe-wallet');
+        iframeWallet.contentWindow.postMessage({
+          type: 'check-authenticated'
+        }, '*');
       });
+
+      window.addEventListener('message', function(event) {
+      const {type, data} = event.data;
+
+      console.log('event-type', type);
+      
+      if (type === 'wallet-token') {
+        console.log('wallet-token', data.token);
+      }
+    });
+      
     </script>
 
   </body>
